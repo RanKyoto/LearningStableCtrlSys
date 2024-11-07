@@ -29,7 +29,8 @@ def plot_dashed_circle(center_x=0, center_y=0, radius=1, color='blue', linestyle
 
 def plot_cartpole(model:th.ScriptModule):
     plt.rc('text', usetex=True) # use latex
-    label_size = 20
+    label_size = 40
+    font_size =44
     theta_max = np.pi/6
     theta_dot_max = 1.0
     theta = np.linspace(-theta_max, theta_max, 200)
@@ -56,8 +57,8 @@ def plot_cartpole(model:th.ScriptModule):
                     dx2.reshape(200,200),
                     color=speed.reshape(200,200),cmap='autumn',arrowsize=5,linewidth=3.0, zorder=1)
     
-    #plt.xlabel(r"$x_3$",fontsize=18)
-    #plt.ylabel(r"$x_4$",fontsize=18)
+    plt.xlabel(r"$x_3$",fontsize=font_size)
+    plt.ylabel(r"$x_4$",fontsize=font_size)
     plt.tick_params(labelsize=label_size)
     plt.tight_layout()
     plt.savefig("./figures/cartpole/cartpole_LDNA.png")
@@ -71,8 +72,8 @@ def plot_cartpole(model:th.ScriptModule):
     plt.figure(figsize=(8,8))
     plt.streamplot(theta_tmp,theta_dot_tmp,dx1,dx2,color=speed,cmap='autumn',arrowsize=5,linewidth=3.0, zorder=1)
 
-    #plt.xlabel(r"$x_3$",fontsize=18)
-    #plt.ylabel(r"$x_4$",fontsize=18)
+    plt.xlabel(r"$x_3$",fontsize=font_size)
+    plt.ylabel(r"$x_4$",fontsize=font_size)
     plt.tick_params(labelsize=label_size)
     plt.tight_layout()
     plt.savefig("./figures/cartpole/cartpole_LDLA.png")
@@ -91,8 +92,8 @@ def plot_cartpole(model:th.ScriptModule):
                     dtheta_dot.reshape(200,200),
                     color=speed.reshape(200,200),cmap='autumn',arrowsize=5,linewidth=3.0, zorder=1)
 
-    #plt.xlabel(r"$x_3$",fontsize=18)
-    #plt.ylabel(r"$x_4$",fontsize=18)
+    plt.xlabel(r"$x_3$",fontsize=font_size)
+    plt.ylabel(r"$x_4$",fontsize=font_size)
     plt.tick_params(labelsize=label_size)
     plt.tight_layout()
     plt.savefig("./figures/cartpole/cartpole_RDNA.png")
@@ -110,8 +111,8 @@ def plot_cartpole(model:th.ScriptModule):
                     dtheta_dot.reshape(200,200),
                     color=speed.reshape(200,200),cmap='autumn',arrowsize=5,linewidth=3.0, zorder=1)
 
-    #plt.xlabel(r"$x_3$",fontsize=18)
-    #plt.ylabel(r"$x_4$",fontsize=18)
+    plt.xlabel(r"$x_3$",fontsize=font_size)
+    plt.ylabel(r"$x_4$",fontsize=font_size)
     plt.tick_params(labelsize=label_size)
     plt.tight_layout()
     plt.savefig("./figures/cartpole/cartpole_RDLA.png")

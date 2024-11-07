@@ -103,6 +103,16 @@ class MLAgent(nn.Module):
         return th.jit.load("./saved_model/{}.zip".format(self.name))
 
 if __name__ == "__main__":
+    agent = MLAgent(name = "cartpole",
+                    dynamics=CartPole,
+                    model_class=Stable_Dynamics,
+                    batch_size=128,
+                    data_size=21,
+                    lr=0.01,
+                    device="cuda:0")
+    #agent.train(10)
+    model = agent.load_model()
+    plot_cartpole(model)
     # def eta(x): return (x[:, 0] - 1.5)**2 + x[:, 1]**2 - 1
     # agent = MLAgent(name = "safe_vanderpol",
     #                 dynamics=VanDerPol,
@@ -117,14 +127,14 @@ if __name__ == "__main__":
     # #model = agent.load_model()
     # plot_vanderpol(model)
 
-    agent = MLAgent(name = "L2_vanderpol",
-                    dynamics=VanDerPol,
-                    model_class=L2_Dynamics,
-                    batch_size=128,
-                    data_size=21,
-                    lr=0.01,
-                    device="cuda:0")
-    agent.train(10)
+    # agent = MLAgent(name = "L2_vanderpol",
+    #                 dynamics=VanDerPol,
+    #                 model_class=L2_Dynamics,
+    #                 batch_size=128,
+    #                 data_size=21,
+    #                 lr=0.01,
+    #                 device="cuda:0")
+    # agent.train(10)
   
         
        
