@@ -3,7 +3,7 @@ import torch as th
 import torch.nn as nn
 from utils import get_device, SmoothReLU
 from dynamics import CartPole,Pendulum,Dynamics,VanDerPol
-from models import Stable_Dynamics,Safty_Dynamics
+from models import Stable_Dynamics,Safty_Dynamics,L2_Dynamics
 from torch.utils.data import DataLoader,random_split
 import numpy as np
 from plots.plot_model import plot_pendulum,plot_cartpole,plot_vanderpol
@@ -103,16 +103,28 @@ class MLAgent(nn.Module):
         return th.jit.load("./saved_model/{}.zip".format(self.name))
 
 if __name__ == "__main__":
-    agent = MLAgent(name = "vanderpol",
+    # def eta(x): return (x[:, 0] - 1.5)**2 + x[:, 1]**2 - 1
+    # agent = MLAgent(name = "safe_vanderpol",
+    #                 dynamics=VanDerPol,
+    #                 model_class=Safty_Dynamics,
+    #                 #model_class=Stable_Dynamics,
+    #                 batch_size=128,
+    #                 data_size=21,
+    #                 lr=0.01,
+    #                 model_kwargs={"c4":0.1,"eta":eta},
+    #                 device="cuda:0")
+    # model = agent.train(epoches=5)
+    # #model = agent.load_model()
+    # plot_vanderpol(model)
+
+    agent = MLAgent(name = "L2_vanderpol",
                     dynamics=VanDerPol,
-                    model_class=Safty_Dynamics,
+                    model_class=L2_Dynamics,
                     batch_size=128,
                     data_size=21,
-                    model_kwargs={"c4":0.1,"eta":lambda x: (x[:, 0] - 1.5)**2 + x[:, 1]**2 - 1},
-                    device="auto")
-    model = agent.train(epoches=10)
-    #model = agent.load_model()
-    plot_vanderpol(model)
+                    lr=0.01,
+                    device="cuda:0")
+    agent.train(10)
   
         
        

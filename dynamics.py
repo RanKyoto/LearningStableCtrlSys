@@ -13,7 +13,7 @@ class Dynamics(nn.Module):
         return None
     
 class VanDerPol(Dynamics):
-    def __init__(self, mu: float = 0.3, tau: float = 0.02) -> None:
+    def __init__(self, mu: float = 0.3, tau: float = 0.1) -> None:
         """
         Initializes the Van der Pol oscillator dynamics.
 
@@ -44,7 +44,7 @@ class VanDerPol(Dynamics):
         x_dot = state[:, 1]
         u = action.flatten()
         # Van der Pol oscillator equations
-        x_ddot = self.mu * (1 - x**2) * x_dot - x + u
+        x_ddot = - x + self.mu * (1 - x_dot**2) * x_dot  + u
         return self.tau * np.column_stack((x_dot, x_ddot))
 
     def plot(self):
@@ -217,8 +217,6 @@ class CartPole(Dynamics):
         dataset = TensorDataset(input_data, output_data)
         return dataset
     
-    
-
 class Pendulum(Dynamics):
     """OpenAI gymnasium Pendulum-v1"""
     def __init__(self) -> None:
