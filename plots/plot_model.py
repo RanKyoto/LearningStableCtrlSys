@@ -4,6 +4,7 @@ import sys
 sys.path.append("./")
 import dynamics as dyn
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 def plot_dashed_circle(center_x=0, center_y=0, radius=1, color='blue', linestyle='--'):
     """
@@ -44,7 +45,7 @@ def plot_cartpole(model:th.ScriptModule):
     state_tensor= th.tensor(state,dtype=th.float32)
     state_tensor.requires_grad = True
 
-    f,g, alpha = model(state_tensor)
+    f,g, alpha, _ = model(state_tensor)
 
     dx1 = (f[:,2,0].reshape(200,200)).cpu().detach().numpy()
     dx2 = (f[:,3,0].reshape(200,200)).cpu().detach().numpy()
@@ -118,7 +119,7 @@ def plot_cartpole(model:th.ScriptModule):
     plt.savefig("./figures/cartpole/cartpole_RDLA.png")
     print("RDLA...done.")
 
-def plot_vanderpol(model: th.ScriptModule):
+def plot_vanderpol(model: th.ScriptModule, IsSafe=False):
     plt.rc('text', usetex=True)  # Enable LaTeX rendering
     label_size = 20
     x1_max = 3.0
@@ -135,7 +136,33 @@ def plot_vanderpol(model: th.ScriptModule):
     state_tensor.requires_grad = True
 
     # Obtain the dynamics (f) and control term (g, alpha) from the model
-    f, g, alpha = model(state_tensor)
+    f, g, alpha, V = model(state_tensor)
+
+    fig = plt.figure(figsize=(8, 8))
+    ax = fig.add_subplot(111, projection='3d')
+
+    surf = ax.plot_surface(x1_tmp, x2_tmp, alpha.reshape(200, 200).cpu().detach().numpy(), cmap='viridis')  
+
+    ax.set_xlabel(r"$x_1$", fontsize=18)
+    ax.set_ylabel(r"$x_2$", fontsize=18)
+    ax.set_zlabel(r'$\alpha(x)$')
+    plt.tick_params(labelsize=label_size)
+    plt.tight_layout()
+    plt.savefig("./figures/vanderpol/vanderpol_LA.png")
+    print("learned controller (LA)...done.")
+
+    fig = plt.figure(figsize=(8, 8))
+    ax = fig.add_subplot(111, projection='3d')
+
+    surf = ax.plot_surface(x1_tmp, x2_tmp, V.reshape(200, 200).cpu().detach().numpy(), cmap='viridis')  
+
+    ax.set_xlabel(r"$x_1$", fontsize=18)
+    ax.set_ylabel(r"$x_2$", fontsize=18)
+    ax.set_zlabel(r'$\alpha(x)$')
+    plt.tick_params(labelsize=label_size)
+    plt.tight_layout()
+    plt.savefig("./figures/vanderpol/vanderpol_LV.png")
+    print("learned V (LV)...done.")
 
     # Plot the open-loop dynamics (without control)
     dx1 = f[:, 0].reshape(200, 200).cpu().detach().numpy()
@@ -166,6 +193,8 @@ def plot_vanderpol(model: th.ScriptModule):
     plt.savefig("./figures/vanderpol/vanderpol_LDLA.png")
     print("Closed-loop dynamics (LDLA)...done.")
 
+
+
     # Plot real dynamics without control using `VanDerPol` class directly
     dynamics = dyn.VanDerPol()
     u = np.zeros_like(x1)
@@ -192,7 +221,8 @@ def plot_vanderpol(model: th.ScriptModule):
     plt.figure(figsize=(8, 8))
     plt.streamplot(x1_tmp, x2_tmp, dx1_real.reshape(200, 200), dx2_real.reshape(200, 200), color=speed.reshape(200, 200),
                    cmap='autumn', arrowsize=5, linewidth=3.0, zorder=1)
-    plot_dashed_circle(1.5,0)
+    if IsSafe:
+        plot_dashed_circle(1.5,0)
     plt.xlabel(r"$x_1$", fontsize=18)
     plt.ylabel(r"$x_2$", fontsize=18)
     plt.tick_params(labelsize=label_size)

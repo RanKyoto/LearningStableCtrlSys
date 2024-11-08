@@ -38,7 +38,7 @@ class LyapunovFunction(nn.Module):
         eta_x = self.icnn(x)
         eta_0 = self.icnn(self.x_stable)
         # V(x) := sigma(eta(x)-eta(0)) + eps*|x|^2
-        V = F.relu(eta_x - eta_0) + self.eps * (x - self.x_stable).pow(2).sum(1)
+        V = F.relu(eta_x - eta_0) + self.eps * (x - self.x_stable).pow(2).sum(1,keepdim=True)
         return V
     
 class posLinear(nn.Linear):

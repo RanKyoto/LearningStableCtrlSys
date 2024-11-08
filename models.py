@@ -57,7 +57,7 @@ class Stable_Dynamics(nn.Module):
         f = th.where(mask, f0, f0 + fs)
 
         del x
-        return f, g, alpha
+        return f, g, alpha, V
     
 class Safty_Dynamics(nn.Module):
     def __init__(self,

@@ -13,7 +13,7 @@ class Dynamics(nn.Module):
         return None
     
 class VanDerPol(Dynamics):
-    def __init__(self, mu: float = 0.3, tau: float = 0.1) -> None:
+    def __init__(self, mu: float = 0.3, tau: float = 0.01) -> None:
         """
         Initializes the Van der Pol oscillator dynamics.
 
@@ -102,11 +102,11 @@ class VanDerPol(Dynamics):
         if isRandom:
             x = np.random.uniform(-x_range, x_range, num)
             x_dot = np.random.uniform(-x_range, x_range, num)
-            u = np.random.uniform(-u_range, u_range, num)
+            u = np.random.uniform(0, u_range, 2)
         else:
             x = np.linspace(-x_range, x_range, num)
             x_dot = np.linspace(-x_range, x_range, num)
-            u = np.linspace(0, u_range, num)
+            u = np.linspace(0, u_range, 2)
 
 
         # Generate a grid for all combinations of `x` and `x_dot`
@@ -197,7 +197,7 @@ class CartPole(Dynamics):
         
         plt.show()
 
-    def make_dataset(self,num=11, isRandom=True)->TensorDataset:
+    def make_dataset(self,num=21, isRandom=True)->TensorDataset:
         x = np.linspace(-self.x_max, self.x_max, 5)
         x_dot = np.linspace(-self.x_dot_max, self.x_dot_max, 5)
         if isRandom:

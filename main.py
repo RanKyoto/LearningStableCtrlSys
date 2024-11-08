@@ -81,7 +81,7 @@ class MLAgent(nn.Module):
                 x = xu[:,0:self.model.state_dim]
                 u = xu[:,self.model.state_dim:].unsqueeze(dim=2)   
                 x.requires_grad = True
-                f, g, alpha = self.model(x)
+                f, g, alpha, V = self.model(x)
                   
                 self.optimizer.zero_grad()
                 loss = nn.functional.mse_loss(f + g @ u, dx)
@@ -103,16 +103,28 @@ class MLAgent(nn.Module):
         return th.jit.load("./saved_model/{}.zip".format(self.name))
 
 if __name__ == "__main__":
-    agent = MLAgent(name = "cartpole",
-                    dynamics=CartPole,
+    # agent = MLAgent(name = "cartpole",
+    #                 dynamics=CartPole,
+    #                 model_class=Stable_Dynamics,
+    #                 batch_size=256,
+    #                 data_size=21,
+    #                 lr=0.01,
+    #                 device="cuda:0")
+    # #model = agent.train(10)
+    # model = agent.load_model()
+    # plot_cartpole(model)
+
+    agent = MLAgent(name = "stable_vanderpol",
+                    dynamics=VanDerPol,
                     model_class=Stable_Dynamics,
-                    batch_size=128,
-                    data_size=21,
+                    batch_size=256,
+                    data_size=101,
                     lr=0.01,
                     device="cuda:0")
-    #agent.train(10)
-    model = agent.load_model()
-    plot_cartpole(model)
+    model = agent.train(epoches=20)
+    #model = agent.load_model()
+    plot_vanderpol(model)
+
     # def eta(x): return (x[:, 0] - 1.5)**2 + x[:, 1]**2 - 1
     # agent = MLAgent(name = "safe_vanderpol",
     #                 dynamics=VanDerPol,
